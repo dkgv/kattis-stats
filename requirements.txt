@@ -1,0 +1,6 @@
+requests==2.25.1
+python_airtable==0.5
+Flask==1.1.2
+beautifulsoup4==4.9.3
+gunicorn==20.0.4
+lxml==4.5.2
