@@ -37,10 +37,7 @@ def _scrape_stats(uid: str) -> Stats:
 
 
 def _find_all_user_ids() -> List[Stats]:
-    user_ids = set()
-    for row in stats_table.get_all():
-        user_ids.add(row['fields']['UserId'])
-    return user_ids
+    return set([row['fields']['UserId'] for row in users_table.get_all()])
 
 
 def fetch_for_user(uid: str) -> None:
