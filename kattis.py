@@ -1,0 +1,53 @@
+import os
+import requests
+import datetime
+from typing import List
+from collections import namedtuple
+from airtable import Airtable
+from bs4 import BeautifulSoup
+
+table = Airtable('app6pZ1s8sxjhqGH6',
+                 api_key=os.environ['AIRTABLE_API_KEY'], table_name='Stats')
+Stats = namedtuple('Stats', ['profile_id', 'rank', 'score'])
+
+
+def _scrape_stats(uid: str) -> Stats:
+    url = 'https://open.kattis.com/users/{}'.format(uid)
+    r = requests.get(url, headers={
+                     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:86.0) Gecko/20100101 Firefox/86.0'
+                     })
+    if r.status_code != 200:
+        return None
+
+    soup = BeautifulSoup(r.text, 'lxml')
+    name = soup.select_one('.fullname > h1:nth-child(1)')
+
+    row = soup.find('table').find_all('tr')[1]
+    cols = row.find_all('td')
+
+    rank = cols[0].text.strip()
+    score = cols[1].text.strip()
+
+    return Stats(name.text.strip(), rank, score)
+
+
+def _find_all_user_ids() -> List[Stats]:
+    user_ids = set()
+    for row in table.get_all():
+        user_ids.add(row['UserId'])
+    return user_ids
+
+
+def fetch_for_user(uid: str) -> None:
+    stats = _scrape_stats(uid)
+    table.insert({
+        'UserId': uid,
+        'Rank': int(stats.rank),
+        'Score': float(stats.score),
+        'Date': str(datetime.date.today())
+    })
+
+
+if __name__ == '__main__':
+    for uid in _find_all_user_ids():
+        fetch_for_user(uid)

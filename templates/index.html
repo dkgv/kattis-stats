@@ -1,0 +1,24 @@
+<html lang="en">
+    <head>
+        <title>kattis-stats</title>
+    </head>
+    <body>
+        <h1>kattis-stats</h1>
+        <p>kattis-stats is a small service that fetches Kattis profile stats daily and constructs a graph based on that data.</p>
+
+        <hr>
+
+        <h4>Add yourself to the list</h4>
+        <p>Check back in 24 hrs after adding yourself.</p>
+        <form method="POST" action="/api/add_user">
+            <input type="text" name="uid" id="uid">
+            <input type="submit" value="Submit">
+        </form>
+
+        <hr>
+
+        <h4>View your stats</h4>
+        <p>Visit <kbd>/view_stats/&lt;uid&gt;</kbd>.</p>
+        <p>Find your uid here: https://open.kattis.com/users/&lt;uid&gt;.</p>
+    </body>
+</html>
