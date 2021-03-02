@@ -1,0 +1,62 @@
+<html lang="en">
+    <head>
+        <title>{{ uid }}</title>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>
+    </head>
+
+    <body>
+        <h1>Kattis stats for {{ uid }}</h1>
+        <canvas id="stats" width="500" height="500"></canvas>
+
+        <script type="text/javascript">
+            var ctx = document.getElementById('stats').getContext('2d');
+            var myChart = new Chart(ctx, {
+                type: 'line',
+                
+                data: {
+                    labels: [
+                    {% for date in dates %}
+                            '{{ date }}',
+                        {% endfor %}
+                    ],
+                    datasets: [
+                        {% for data in ranks %}
+                        {
+                            label: 'Rank',
+                            yAxisID: 'Rank',
+                            data: {{ data }},
+                            backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                            borderColor: 'rgba(255, 99, 132, 1)',
+                            borderWidth: 1
+                        },
+                        {% endfor %}                        
+                        {% for data in scores %}
+                        {
+                            label: 'Score',
+                            yAxisID: 'Score',
+                            data: {{ data }},
+                            backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                            borderColor: 'rgba(54, 162, 235, 1)',
+                            borderWidth: 1
+                        },
+                        {% endfor %}
+                    ]
+                },
+                options: {
+                    scales: {
+                        yAxes: [
+                            {
+                                id: 'Rank',
+                                position: 'right',
+                            },
+                            {
+                                id: 'Score',
+                                position: 'left',
+                            },
+                        ]
+                    }
+                }
+            });
+        </script>
+    </body>
+</html>

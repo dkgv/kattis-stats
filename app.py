@@ -11,8 +11,13 @@ def index():
 
 @app.route('/view_stats/<uid>')
 def view_stats(uid):
-    history = [row for row in stats_table.get_all() if row['fields']['UserId'] == uid]
-    return render_template('view_stats.html', history=history)
+    history = [row['fields'] for row in stats_table.get_all() if row['fields']['UserId'] == uid]
+    ranks, scores, dates = [], [], []
+    for row in history:
+        dates.append(row['Date'])
+        ranks.append(row['Rank'])
+        scores.append(row['Score'])
+    return render_template('view_stats.html', uid=uid, ranks=ranks, scores=scores, dates=dates)
 
 
 @app.route('/api/add_user', methods=['POST'])
