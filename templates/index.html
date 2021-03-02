@@ -34,7 +34,7 @@
             <tbody>
                 {% for gain in gains %}
                 <tr>
-                    <td>{{ gain[0] }}</td>
+                    <td><a href="/view_stats/{{ gain[0] }}">{{ gain[0] }}</a></td>
                     <td>+{{ gain[1] }}</td>
                 </tr>
                 {% endfor %}
@@ -45,7 +45,7 @@
 
         <h3>Users in database</h3>
         {% for user in users %}
-        <p>{{ user }}</p>
+        <p><a href="/view_stats/{{ user }}">{{ user }}</a></p>
         {% endfor %}
     </body>
 </html>
