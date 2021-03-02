@@ -11,7 +11,7 @@ def index():
 
 @app.route('/view_stats/<uid>')
 def view_stats(uid):
-    history = [row for row in stats_table.get_all() if row['UserId'] == uid]
+    history = [row for row in stats_table.get_all() if row['fields']['UserId'] == uid]
     return render_template('view_stats.html', history=history)
 
 
