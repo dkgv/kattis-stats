@@ -15,26 +15,24 @@
                 
                 data: {
                     labels: [
-                    {% for date in dates %}
-                            '{{ date }}',
+                        {% for datum in history %}
+                                '{{ datum["Date"] }}',
                         {% endfor %}
                     ],
                     datasets: [
-                        {% for data in ranks %}
+                        {% for datum in history %}
                         {
                             label: 'Rank',
                             yAxisID: 'Rank',
-                            data: {{ data }},
+                            data: {{ datum["Rank"] }},
                             backgroundColor: 'rgba(255, 99, 132, 0.2)',
                             borderColor: 'rgba(255, 99, 132, 1)',
                             borderWidth: 1
                         },
-                        {% endfor %}                        
-                        {% for data in scores %}
                         {
                             label: 'Score',
                             yAxisID: 'Score',
-                            data: {{ data }},
+                            data: {{ datum["Score"] }},
                             backgroundColor: 'rgba(54, 162, 235, 0.2)',
                             borderColor: 'rgba(54, 162, 235, 1)',
                             borderWidth: 1

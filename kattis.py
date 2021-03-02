@@ -36,8 +36,12 @@ def _scrape_stats(uid: str) -> Stats:
     return Stats(name.text.strip(), rank, score)
 
 
-def _find_all_user_ids() -> List[Stats]:
-    return set([row['fields']['UserId'] for row in users_table.get_all()])
+def find_all_history() -> List[Stats]:
+    return [row['fields'] for row in stats_table.get_all()]
+
+
+def find_all_user_ids() -> list:
+    return [row['fields']['UserId'] for row in users_table.get_all()]
 
 
 def fetch_for_user(uid: str) -> None:
@@ -51,5 +55,5 @@ def fetch_for_user(uid: str) -> None:
 
 
 if __name__ == '__main__':
-    for uid in _find_all_user_ids():
+    for uid in find_all_user_ids():
         fetch_for_user(uid)

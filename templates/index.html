@@ -8,7 +8,7 @@
 
         <hr>
 
-        <h4>Add yourself to the list</h4>
+        <h3>Add yourself to the list</h3>
         <p>Check back in 24 hrs after adding yourself.</p>
         <form method="POST" action="/api/add_user">
             <input type="text" name="uid" id="uid">
@@ -17,8 +17,35 @@
 
         <hr>
 
-        <h4>View your stats</h4>
+        <h3>View your stats</h3>
         <p>Visit <kbd>/view_stats/&lt;uid&gt;</kbd>.</p>
         <p>Find your uid here: https://open.kattis.com/users/&lt;uid&gt;.</p>
+
+        <hr>
+
+        <h3>Todays top 10 gainers</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>User</th>
+                    <th>Gain</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for gain in gains %}
+                <tr>
+                    <td>{{ gain[0] }}</td>
+                    <td>+{{ gain[1] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <hr>
+
+        <h3>Users in database</h3>
+        {% for user in users %}
+        <p>{{ user }}</p>
+        {% endfor %}
     </body>
 </html>

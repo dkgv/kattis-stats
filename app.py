@@ -1,4 +1,5 @@
-from kattis import fetch_for_user, stats_table, users_table
+import datetime
+from kattis import find_all_history, find_all_user_ids, fetch_for_user, users_table
 from flask import Flask, jsonify, request, render_template
 
 app = Flask(__name__)
@@ -6,18 +7,34 @@ app = Flask(__name__)
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    all_history = find_all_history()
+    all_users = find_all_user_ids()
+    
+    today = datetime.date.today()
+    yesterday = str(today - datetime.timedelta(days=1))
+    today = str(today)
+    
+    history_today = [day for day in all_history if day['Date'] == today]
+    history_yesterday = [day for day in all_history if day['Date'] == yesterday]
+    
+    def pts_day(user, history):
+        for entry in history:
+            if entry['UserId'] == user:
+                return entry['Score']
+        return 99999999
+    
+    pts_gain = {}
+    for user in all_users:
+        pts_gain[user] = max(0, pts_day(user, history_today) - pts_day(user, history_yesterday))
+    
+    gains = sorted(pts_gain.items(), key=lambda item: item[1])
+    return render_template('index.html', users=all_users, gains=gains[:min(10, len(gains))])
 
 
 @app.route('/view_stats/<uid>')
 def view_stats(uid):
-    history = [row['fields'] for row in stats_table.get_all() if row['fields']['UserId'] == uid]
-    ranks, scores, dates = [], [], []
-    for row in history:
-        dates.append(row['Date'])
-        ranks.append(row['Rank'])
-        scores.append(row['Score'])
-    return render_template('view_stats.html', uid=uid, ranks=ranks, scores=scores, dates=dates)
+    history = [row for row in find_all_history() if row['UserId'] == uid]
+    return render_template('view_stats.html', uid=uid, history=history)
 
 
 @app.route('/api/add_user', methods=['POST'])
