@@ -1,4 +1,4 @@
-from kattis import fetch_for_user, table
+from kattis import fetch_for_user, stats_table, users_table
 from flask import Flask, jsonify, request, render_template
 
 app = Flask(__name__)
@@ -11,7 +11,7 @@ def index():
 
 @app.route('/view_stats/<uid>')
 def view_stats(uid):
-    history = [row for row in table.get_all() if row['UserId'] == uid]
+    history = [row for row in stats_table.get_all() if row['UserId'] == uid]
     return render_template('view_stats.html', history=history)
 
 
@@ -20,7 +20,16 @@ def add_user():
     data = request.form.to_dict()
     if 'uid' not in data:
         return jsonify({'status': 'error'})
-    fetch_for_user(data['uid'])
+
+    uid = data['uid']
+    
+    # Does user already exist?
+    if any(row['fields']['UserId'] == uid for row in users_table.get_all()):
+        return jsonify({'status': 'user already exists'})
+    
+    users_table.insert({'UserId': uid})
+    fetch_for_user(uid)
+
     return jsonify({'status': 'success'})
 
 

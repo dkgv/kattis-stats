@@ -6,8 +6,13 @@ from collections import namedtuple
 from airtable import Airtable
 from bs4 import BeautifulSoup
 
-table = Airtable('app6pZ1s8sxjhqGH6',
-                 api_key=os.environ['AIRTABLE_API_KEY'], table_name='Stats')
+
+def _get_airtable(table: str) -> Airtable:
+    api_key = os.environ['AIRTABLE_API_KEY']
+    return Airtable('app6pZ1s8sxjhqGH6', api_key=api_key, table_name=table)
+
+stats_table = _get_airtable('Stats')
+users_table = _get_airtable('Users')
 Stats = namedtuple('Stats', ['profile_id', 'rank', 'score'])
 
 
@@ -33,14 +38,14 @@ def _scrape_stats(uid: str) -> Stats:
 
 def _find_all_user_ids() -> List[Stats]:
     user_ids = set()
-    for row in table.get_all():
-        user_ids.add(row['UserId'])
+    for row in stats_table.get_all():
+        user_ids.add(row['fields']['UserId'])
     return user_ids
 
 
 def fetch_for_user(uid: str) -> None:
     stats = _scrape_stats(uid)
-    table.insert({
+    stats_table.insert({
         'UserId': uid,
         'Rank': int(stats.rank),
         'Score': float(stats.score),
