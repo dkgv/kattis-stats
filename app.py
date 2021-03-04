@@ -50,6 +50,11 @@ def add_user():
 
     uid = data['uid']
 
+    # Check if URL was submitted
+    kattis_url = 'https://open.kattis.com/users/'
+    if uid.startswith(kattis_url):
+        uid = uid.split(kattis_url)[1]
+
     # Does user already exist?
     if any(row['fields']['UserId'] == uid for row in users_table.get_all()):
         return jsonify({'status': 'user already exists'})

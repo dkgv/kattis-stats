@@ -5,24 +5,29 @@
     </head>
     <body>
         <div class="container">
-            <h1>kattis-stats</h1>
-            <p>kattis-stats is a small service that fetches Kattis profile stats daily and constructs a graph based on that data.</p>
-    
+            <div class="row">
+                <div class="col">
+                    <h1>kattis-stats</h1>
+                    <p>kattis-stats is a small service that fetches Kattis stats daily and visualizes that data via graphs and tables.</p>
+                </div>
+            </div>
+
             <hr>
     
             <div class="row">
-                <div class="col-6">
-                    <h3>Add yourself to the list</h3>
+                <div class="col">
+                    <h3>Add yourself to the database</h3>
                     <p>Check back 24 hrs after adding yourself.</p>
-                    <form class="form-inline" method="POST" action="/api/add_user">
-                        <input class="form-control" type="text" placeholder="Kattis uid (https://open.kattis.com/users/<uid>)" name="uid" id="uid">
-                        <input class="btn btn-primary" type="submit" value="Submit">
+                    <form method="POST" action="/api/add_user">
+                        <div class="row">
+                            <div class="col-11">
+                                <input class="form-control" type="text" placeholder="Kattis profile URL (https://open.kattis.com/users/<uid>)" name="uid" id="uid">
+                            </div>
+                            <div class="col-1">
+                                <input class="btn btn-primary" type="submit" value="Submit">
+                            </div>
+                        </div>
                     </form>
-                </div>
-                <div class="col-6">
-                    <h3>View your stats</h3>
-                    <p>Visit <kbd>/view_stats/&lt;uid&gt;</kbd>.</p>
-                    <p>Find your uid here: https://open.kattis.com/users/&lt;uid&gt;.</p>
                 </div>
             </div>
 
