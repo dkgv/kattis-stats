@@ -1,12 +1,15 @@
 <html lang="en">
     <head>
         <title>{{ uid }}</title>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
         <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>
     </head>
 
     <body>
-        <h1>Kattis stats for {{ uid }}</h1>
-        <canvas id="stats" width="500" height="500"></canvas>
+        <div class="container">
+            <h1>Kattis stats for <a href="https://open.kattis.com/users/{{ uid }}">{{ uid }}</a></h1>
+            <canvas id="stats" width="500" height="500"></canvas>
+        </div>
 
         <script type="text/javascript">
             var ctx = document.getElementById('stats').getContext('2d');

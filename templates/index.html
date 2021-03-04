@@ -1,51 +1,57 @@
 <html lang="en">
     <head>
         <title>kattis-stats</title>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     </head>
     <body>
-        <h1>kattis-stats</h1>
-        <p>kattis-stats is a small service that fetches Kattis profile stats daily and constructs a graph based on that data.</p>
+        <div class="container">
+            <h1>kattis-stats</h1>
+            <p>kattis-stats is a small service that fetches Kattis profile stats daily and constructs a graph based on that data.</p>
+    
+            <hr>
+    
+            <div class="row">
+                <div class="col-6">
+                    <h3>Add yourself to the list</h3>
+                    <p>Check back 24 hrs after adding yourself.</p>
+                    <form class="form-inline" method="POST" action="/api/add_user">
+                        <input class="form-control" type="text" name="uid" id="uid">
+                        <input class="btn btn-primary" type="submit" value="Submit">
+                    </form>
+                </div>
+                <div class="col-6">
+                    <h3>View your stats</h3>
+                    <p>Visit <kbd>/view_stats/&lt;uid&gt;</kbd>.</p>
+                    <p>Find your uid here: https://open.kattis.com/users/&lt;uid&gt;.</p>
+                </div>
+            </div>
 
-        <hr>
-
-        <h3>Add yourself to the list</h3>
-        <p>Check back in 24 hrs after adding yourself.</p>
-        <form method="POST" action="/api/add_user">
-            <input type="text" name="uid" id="uid">
-            <input type="submit" value="Submit">
-        </form>
-
-        <hr>
-
-        <h3>View your stats</h3>
-        <p>Visit <kbd>/view_stats/&lt;uid&gt;</kbd>.</p>
-        <p>Find your uid here: https://open.kattis.com/users/&lt;uid&gt;.</p>
-
-        <hr>
-
-        <h3>Todays top 10 gainers</h3>
-        <table>
-            <thead>
-                <tr>
-                    <th>User</th>
-                    <th>Gain</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for gain in gains %}
-                <tr>
-                    <td><a href="/view_stats/{{ gain['UserId'] }}">{{ gain['UserId'] }}</a></td>
-                    <td>+{{ gain['Score'] }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-
-        <hr>
-
-        <h3>Users in database</h3>
-        {% for user in users %}
-        <p><a href="/view_stats/{{ user }}">{{ user }}</a></p>
-        {% endfor %}
+            <hr>
+    
+            <h3>Todays top 10 gainers</h3>
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>User</th>
+                        <th>Gain</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for gain in gains %}
+                    <tr>
+                        <td><a href="/view_stats/{{ gain['UserId'] }}">{{ gain['UserId'] }}</a></td>
+                        <td>+{{ gain['Score']|round(2) }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+    
+            <hr>
+    
+            <h3>Users in database</h3>
+            {% for user in users %}
+            <p><a href="/view_stats/{{ user }}">{{ user }}</a></p>
+            {% endfor %}
+        </div>
     </body>
 </html>
