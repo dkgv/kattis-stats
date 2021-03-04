@@ -18,7 +18,7 @@ def index():
     history_yesterday = [
         day for day in all_history if day['Date'] == yesterday]
 
-    def pts_day(user, history):
+    def pts_day(user: str, history: list):
         for entry in history:
             if entry['UserId'] == user:
                 return entry['Score']
@@ -37,6 +37,8 @@ def index():
 @app.route('/view_stats/<uid>')
 def view_stats(uid):
     history = [row for row in find_all_history() if row['UserId'] == uid]
+    history = sorted(history, key=lambda item: datetime.datetime.strptime(
+        item['Date'], '%Y-%m-%d'))
     return render_template('view_stats.html', uid=uid, history=history)
 
 

@@ -11,20 +11,23 @@
         <script type="text/javascript">
             var ctx = document.getElementById('stats').getContext('2d');
             var myChart = new Chart(ctx, {
-                type: 'line',
+                type: 'bar',
                 
                 data: {
                     labels: [
                         {% for datum in history %}
-                                '{{ datum["Date"] }}',
+                        '{{ datum["Date"] }}',
                         {% endfor %}
                     ],
                     datasets: [
-                        {% for datum in history %}
                         {
                             label: 'Rank',
                             yAxisID: 'Rank',
-                            data: {{ datum["Rank"] }},
+                            data: [
+                                {% for datum in history %}
+                                {{ datum["Rank"] }},
+                                {% endfor %}
+                            ],
                             backgroundColor: 'rgba(255, 99, 132, 0.2)',
                             borderColor: 'rgba(255, 99, 132, 1)',
                             borderWidth: 1
@@ -32,24 +35,36 @@
                         {
                             label: 'Score',
                             yAxisID: 'Score',
-                            data: {{ datum["Score"] }},
+                            data: [
+                                {% for datum in history %}
+                                {{ datum["Score"] }},
+                                {% endfor %}
+                            ],
                             backgroundColor: 'rgba(54, 162, 235, 0.2)',
                             borderColor: 'rgba(54, 162, 235, 1)',
                             borderWidth: 1
                         },
-                        {% endfor %}
                     ]
                 },
                 options: {
+                    responsive:true,
                     scales: {
                         yAxes: [
                             {
                                 id: 'Rank',
-                                position: 'right',
+                                position: 'left',
+                                scaleLabel: {
+                                    display: true,
+                                    labelString: 'Rank'
+                                }
                             },
                             {
                                 id: 'Score',
-                                position: 'left',
+                                position: 'right',
+                                scaleLabel: {
+                                    display: true,
+                                    labelString: 'Score'
+                                }
                             },
                         ]
                     }
