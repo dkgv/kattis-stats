@@ -44,7 +44,7 @@
                 <tbody>
                     {% for gain in gains %}
                     <tr>
-                        <td><a href="/view_stats/{{ gain['UserId'] }}">{{ gain['UserId'] }}</a></td>
+                        <td><img style="max-width: 20px; border-radius: 50%; border: 1px #898992 solid;" src="https://open.kattis.com/images/countries/{{ gain['User']['CountryShort'] }}/40px?" alt="Flag"> <a href="/view_stats/{{ gain['User']['UserId'] }}">{{ gain['User']['Name'] }}</a></td>
                         <td>+{{ gain['Score']|round(2) }}</td>
                     </tr>
                     {% endfor %}
@@ -55,7 +55,7 @@
     
             <h3>Users in database</h3>
             {% for user in users %}
-            <p><a href="/view_stats/{{ user }}">{{ user }}</a></p>
+            <p><a href="/view_stats/{{ user['UserId'] }}">{{ user['Name'] }}</a></p>
             {% endfor %}
         </div>
     </body>
