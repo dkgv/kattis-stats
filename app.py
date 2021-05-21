@@ -50,9 +50,7 @@ def index():
 @app.route('/view_stats/<uid>')
 def view_stats(uid):
     history = [row for row in find_all_history() if row['UserId'] == uid]
-    history = sorted(history, key=lambda item: datetime.datetime.strptime(
-        item['Date'], '%Y-%m-%d'))
-    return render_template('view_stats.html', uid=uid, history=history)
+    return render_template('view_stats.html', uid=uid, history=history.reverse())
 
 
 @app.route('/api/add_user', methods=['POST'])
