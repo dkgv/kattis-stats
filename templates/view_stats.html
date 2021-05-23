@@ -30,7 +30,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% for datum in history %}
+                    {% for datum in history|reverse %}
                     <tr>
                         <td>{{ datum['Date'] }}</td>
                         <td>{{ datum['Rank'] }}</td>

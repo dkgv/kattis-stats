@@ -1,19 +1,29 @@
 import os
+import gspread
 import requests
 import datetime
 from typing import List
 from collections import namedtuple
-from airtable import Airtable
 from bs4 import BeautifulSoup
 
+credentials = {
+    'type': os.getenv('type'),
+    'project_id': os.getenv('project_id'),
+    'private_key_id': os.getenv('private_key_id'),
+    'private_key': os.getenv('private_key').replace('\\n', '\n'),
+    'client_email': os.getenv('client_email'),
+    'client_id': os.getenv('client_id'),
+    'auth_uri': os.getenv('auth_uri'),
+    'token_uri': os.getenv('token_uri'),
+    'auth_provider_x509_cert_url': os.getenv('auth_provider_x509_cert_url'),
+    'client_x509_cert_url': os.getenv('client_x509_cert_url')
+}
 
-def _get_airtable(table: str) -> Airtable:
-    api_key = os.environ['AIRTABLE_API_KEY']
-    return Airtable('app6pZ1s8sxjhqGH6', api_key=api_key, table_name=table)
+gc = gspread.service_account_from_dict(credentials)
+sheet = gc.open('kattis-stats')
+stats_table = sheet.worksheet('Stats')
+users_table = sheet.worksheet('Users')
 
-
-stats_table = _get_airtable('Stats')
-users_table = _get_airtable('Users')
 Profile = namedtuple('Profile', ['name', 'uid', 'rank',
                                  'score', 'country', 'country_short', 'university', 'university_short'])
 
@@ -48,22 +58,18 @@ def _scrape_profile(uid: str) -> Profile:
     return Profile(name, uid, rank, score, country, country_short, uni, uni_short)
 
 
-def find_all_history() -> List[Profile]:
-    return [row['fields'] for row in stats_table.get_all()]
-
-
 def find_all_user_ids() -> list:
-    return [row['fields']['UserId'] for row in users_table.get_all()]
+    return users_table.col_values(1)
 
 
 def fetch_for_user(uid: str) -> Profile:
     profile = _scrape_profile(uid)
-    stats_table.insert({
-        'UserId': uid,
-        'Rank': int(profile.rank),
-        'Score': float(profile.score),
-        'Date': str(datetime.date.today()),
-    })
+    stats_table.append_row([
+        uid,
+        int(profile.rank),
+        float(profile.score),
+        str(datetime.date.today())
+    ])
     return profile
 
 

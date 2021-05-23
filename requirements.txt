@@ -4,3 +4,4 @@ Flask==1.1.2
 beautifulsoup4==4.9.3
 gunicorn==20.0.4
 lxml==4.5.2
+gspread==3.7.0

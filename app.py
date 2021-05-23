@@ -1,5 +1,5 @@
 import datetime
-from kattis import find_all_history, find_all_user_ids, fetch_for_user, users_table
+from kattis import fetch_for_user, stats_table, users_table
 from flask import Flask, jsonify, request, render_template
 
 app = Flask(__name__)
@@ -7,15 +7,12 @@ app = Flask(__name__)
 
 @app.route('/')
 def index():
-    all_history = find_all_history()
-    all_users = [row['fields'] for row in users_table.get_all()]
-
     today = datetime.date.today()
     yesterday = str(today - datetime.timedelta(days=1))
     today = str(today)
 
     history_today, history_yesterday = [], []
-    for day in all_history:
+    for day in stats_table.get_all_records():
         if day['Date'] == today:
             history_today.append(day)
         elif day['Date'] == yesterday:
@@ -28,6 +25,7 @@ def index():
         return 99999999
 
     # Compute each user score gain from yesterday -> today
+    all_users = users_table.get_all_records()
     pts_gain = {}
     for user in all_users:
         pts_gain[user['UserId']] = {
@@ -49,8 +47,8 @@ def index():
 
 @app.route('/view_stats/<uid>')
 def view_stats(uid):
-    history = [row for row in find_all_history() if row['UserId'] == uid]
-    return render_template('view_stats.html', uid=uid, history=history.reverse())
+    history = [x for x in stats_table.get_all_records() if x['UserId'] == uid]
+    return render_template('view_stats.html', uid=uid, history=history)
 
 
 @app.route('/api/add_user', methods=['POST'])
@@ -67,7 +65,7 @@ def add_user():
         uid = uid.split(kattis_url)[1]
 
     # Does user already exist?
-    if any(row['fields']['UserId'] == uid for row in users_table.get_all()):
+    if any(row['UserId'] == uid for row in users_table.get_all_records()):
         return jsonify({'status': 'user already exists'})
 
     profile = fetch_for_user(uid)
