@@ -59,16 +59,24 @@ def _scrape_profile(uid: str) -> Profile:
 
 
 def find_all_user_ids() -> list:
-    return users_table.col_values(1)
+    return users_table.col_values(1)[1:]
+
+
+def find_all_users():
+    return users_table.get_all_records()[1:]
+
+
+def find_all_history() -> list:
+    return stats_table.get_all_records()[1:]
 
 
 def fetch_for_user(uid: str) -> Profile:
     profile = _scrape_profile(uid)
     stats_table.append_row([
         uid,
-        int(profile.rank),
-        float(profile.score),
-        str(datetime.date.today())
+        profile.score,
+        profile.rank,
+        datetime.date.today().strftime('%-m/%d/%Y')
     ])
     return profile
 

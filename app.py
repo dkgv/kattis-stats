@@ -1,5 +1,5 @@
 import datetime
-from kattis import fetch_for_user, stats_table, users_table
+from kattis import fetch_for_user, find_all_history, find_all_users, users_table
 from flask import Flask, jsonify, request, render_template
 
 app = Flask(__name__)
@@ -7,12 +7,13 @@ app = Flask(__name__)
 
 @app.route('/')
 def index():
+    fmt = '%-m/%d/%Y'
     today = datetime.date.today()
-    yesterday = str(today - datetime.timedelta(days=1))
-    today = str(today)
+    yesterday = (today - datetime.timedelta(days=1)).strftime(fmt)
+    today = today.strftime(fmt)
 
     history_today, history_yesterday = [], []
-    for day in stats_table.get_all_records():
+    for day in find_all_history()[1:]:
         if day['Date'] == today:
             history_today.append(day)
         elif day['Date'] == yesterday:
@@ -25,7 +26,7 @@ def index():
         return 99999999
 
     # Compute each user score gain from yesterday -> today
-    all_users = users_table.get_all_records()
+    all_users = find_all_users()
     pts_gain = {}
     for user in all_users:
         pts_gain[user['UserId']] = {
@@ -47,7 +48,7 @@ def index():
 
 @app.route('/view_stats/<uid>')
 def view_stats(uid):
-    history = [x for x in stats_table.get_all_records() if x['UserId'] == uid]
+    history = [x for x in find_all_history() if x['UserId'] == uid]
     return render_template('view_stats.html', uid=uid, history=history)
 
 
@@ -65,18 +66,18 @@ def add_user():
         uid = uid.split(kattis_url)[1]
 
     # Does user already exist?
-    if any(row['UserId'] == uid for row in users_table.get_all_records()):
+    if any(row['UserId'] == uid for row in find_all_users()):
         return jsonify({'status': 'user already exists'})
 
     profile = fetch_for_user(uid)
-    users_table.insert({
-        'UserId': uid,
-        'Name': profile.name,
-        'Country': profile.country,
-        'CountryShort': profile.country_short,
-        'University': profile.university,
-        'UniversityShort': profile.university_short,
-    })
+    users_table.append_row([
+        uid,
+        profile.name,
+        profile.country,
+        profile.country_short,
+        profile.university,
+        profile.university_short,
+    ])
 
     return jsonify({'status': 'success'})
 
