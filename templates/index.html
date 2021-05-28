@@ -1,62 +1,33 @@
-<html lang="en">
-    <head>
-        <title>kattis-stats</title>
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-    </head>
-    <body>
-        <div class="container">
-            <div class="row">
-                <div class="col">
-                    <h1>kattis-stats</h1>
-                    <p>kattis-stats is a small service that fetches Kattis stats daily and visualizes that data via graphs and tables.</p>
-                </div>
-            </div>
+{% extends 'base.html' %}
 
-            <hr>
-    
-            <div class="row">
-                <div class="col">
-                    <h3>Add yourself to the database</h3>
-                    <p>Check back 24 hrs after adding yourself.</p>
-                    <form method="POST" action="/api/add_user">
-                        <div class="row">
-                            <div class="col-11">
-                                <input class="form-control" type="text" placeholder="Kattis profile URL (https://open.kattis.com/users/<uid>)" name="uid" id="uid">
-                            </div>
-                            <div class="col-1">
-                                <input class="btn btn-primary" type="submit" value="Submit">
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
+{% block content %}
+<h3>Todays top 10 gainers</h3>
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th>User</th>
+            <th>Gain</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for gain in gains %}
+        <tr>
+            <td>
+                <img style="max-width: 20px; border-radius: 50%; border: 1px #898992 solid;"
+                    src="https://open.kattis.com/images/countries/{{ gain['User']['CountryShort'] }}/40px?" alt="Flag">
+                <a href="/view_stats/{{ gain['User']['UserId'] }}">{{ gain['User']['Name'] }}</a>
+            </td>
+            <td>+{{ gain['Score']|round(2) }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
 
-            <hr>
-    
-            <h3>Todays top 10 gainers</h3>
-            <table class="table table-hover">
-                <thead>
-                    <tr>
-                        <th>User</th>
-                        <th>Gain</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for gain in gains %}
-                    <tr>
-                        <td><img style="max-width: 20px; border-radius: 50%; border: 1px #898992 solid;" src="https://open.kattis.com/images/countries/{{ gain['User']['CountryShort'] }}/40px?" alt="Flag"> <a href="/view_stats/{{ gain['User']['UserId'] }}">{{ gain['User']['Name'] }}</a></td>
-                        <td>+{{ gain['Score']|round(2) }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-    
-            <hr>
-    
-            <h3>Users in database</h3>
-            {% for user in users %}
-            <p><a href="/view_stats/{{ user['UserId'] }}">{{ user['Name'] }}</a></p>
-            {% endfor %}
-        </div>
-    </body>
-</html>
+<hr>
+
+<h3>Users in database</h3>
+{% for user in users %}
+<p><a href="/view_stats/{{ user['UserId'] }}">{{ user['Name'] }}</a></p>
+{% endfor %}
+
+{% endblock %}

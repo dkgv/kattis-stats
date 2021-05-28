@@ -1,0 +1,23 @@
+<html lang="en">
+<head>
+    <title>kattis-stats</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>
+</head>
+<body>
+    <nav class="navbar navbar-light bg-light justify-content-between">
+        <div class="container">
+            <a class="navbar-brand" href="https://kattis-stats.herokuapp.com/">kattis-stats</a>
+            <form method="POST" action="/api/add_user" class="form-inline">
+                <input class="form-control" type="text" placeholder="Kattis profile URL (https://open.kattis.com/users/<uid>)"
+                    name="uid" id="uid">
+                <input class="btn btn-primary" type="submit" value="Begin tracking">
+            </form>
+        </div>
+    </nav>
+    <div class="container">
+        {% block content %}{% endblock %}
+    </div>
+</body>
+</html>

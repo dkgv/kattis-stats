@@ -49,7 +49,23 @@ def index():
 @app.route('/view_stats/<uid>')
 def view_stats(uid):
     history = [x for x in find_all_history() if x['UserId'] == uid]
-    return render_template('view_stats.html', uid=uid, history=history)
+    name = list(filter(lambda u: u['UserId'] == uid, find_all_users()))[
+        0]['Name']
+    now = history[-1]['Score']
+    pts_last_week = now - history[-7]['Score']
+    pts_last_month = now - history[-30]['Score']
+    pts_last_year = now - history[-min(365, len(history) - 1)]['Score']
+    avg_pts_per_day = (now - history[0]['Score']) / float(len(history))
+    return render_template(
+        'view_stats.html',
+        name=name,
+        uid=uid,
+        history=history,
+        pts_last_week=pts_last_week,
+        pts_last_month=pts_last_month,
+        pts_last_year=pts_last_year,
+        avg_pts_per_day=avg_pts_per_day
+    )
 
 
 @app.route('/api/add_user', methods=['POST'])

@@ -1,126 +1,124 @@
-<html lang="en">
-    <head>
-        <title>{{ uid }}</title>
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>
-    </head>
+{% extends 'base.html' %}
 
-    <body>
-        <div class="container">
-            <h1>Kattis stats for <a href="https://open.kattis.com/users/{{ uid }}">{{ uid }}</a></h1>
-            
-            <div class="row">
-                <div class="col-6">
-                    <canvas id="score-chart" width="500" height="300"></canvas>
-                </div>
-                <div class="col-6">
-                    <canvas id="rank-chart" width="500" height="300"></canvas>
-                </div>
-            </div>
-            
-            <hr>
+{% block content %}
+<h1>Profile of <a href="https://open.kattis.com/users/{{ uid }}">{{ name }} ({{ uid }})</a></h1>
 
-            <h1>History</h1>
-            <table class="table table-hover">
-                <thead>
-                    <tr>
-                        <th>Date</th>
-                        <th>Rank</th>
-                        <th>Score</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for datum in history|reverse %}
-                    <tr>
-                        <td>{{ datum['Date'] }}</td>
-                        <td>{{ datum['Rank'] }}</td>
-                        <td>{{ datum['Score'] }}</td>
-                    </tr>
+<div class="row">
+    <div class="col-6">
+        <canvas id="score-chart" width="500" height="300"></canvas>
+    </div>
+    <div class="col-6">
+        <canvas id="rank-chart" width="500" height="300"></canvas>
+    </div>
+</div>
+
+<hr>
+
+<h1>General stats</h1>
+{{ name }} has gained {{ pts_last_week|round(2) }} pts last week, {{ pts_last_month|round(2) }} pts last month, and {{ pts_last_year|round(2) }} pts last year with an average of {{ avg_pts_per_day|round(2) }} pts per day (all time).
+
+<hr>
+
+<h1>History</h1>
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>Rank</th>
+            <th>Score</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for datum in history|reverse %}
+        <tr>
+            <td>{{ datum['Date'] }}</td>
+            <td>{{ datum['Rank'] }}</td>
+            <td>{{ datum['Score'] }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+</div>
+
+<script type="text/javascript">
+var ctx = document.getElementById('score-chart').getContext('2d');
+new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: [
+            {% for datum in history %}'{{ datum["Date"] }}',{% endfor %}
+        ],
+        datasets: [
+            {
+                label: 'Score',
+                data: [
+                    {% for datum in history %}
+                    {{ datum["Score"] }},
                     {% endfor %}
-                </tbody>
-            </table>
-        </div>
-
-        <script type="text/javascript">
-            var ctx = document.getElementById('score-chart').getContext('2d');
-            new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: [
-                        {% for datum in history %}'{{ datum["Date"] }}',{% endfor %}
-                    ],
-                    datasets: [
-                        {
-                            label: 'Score',
-                            data: [
-                                {% for datum in history %}
-                                {{ datum["Score"] }},
-                                {% endfor %}
-                            ],
-                            backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                            borderColor: 'rgba(255, 99, 132, 1)',
-                            borderWidth: 1
-                        },
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    title: {
+                ],
+                backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                borderColor: 'rgba(255, 99, 132, 1)',
+                borderWidth: 1
+            },
+        ]
+    },
+    options: {
+        responsive: true,
+        title: {
+            display: true,
+            text: "Score"
+        },
+        scales: {
+            yAxes: [
+                {
+                    scaleLabel: {
                         display: true,
-                        text: "Score"
-                    },
-                    scales: {
-                        yAxes: [
-                            {
-                                scaleLabel: {
-                                    display: true,
-                                    labelString: 'Score'
-                                }
-                            },
-                        ]
+                        labelString: 'Score'
                     }
-                }
-            });
-
-            var ctx = document.getElementById('rank-chart').getContext('2d');
-            new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: [
-                        {% for datum in history %}'{{ datum["Date"] }}',{% endfor %}
-                    ],
-                    datasets: [
-                        {
-                            label: 'Rank',
-                            data: [
-                                {% for datum in history %}
-                                {{ datum["Rank"] }},
-                                {% endfor %}
-                            ],
-                            backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                            borderColor: 'rgba(54, 162, 235, 1)',
-                            borderWidth: 1
-                        },
-                    ]
                 },
-                options: {
-                    responsive: true,
-                    title: {
+            ]
+        }
+    }
+});
+
+var ctx = document.getElementById('rank-chart').getContext('2d');
+new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: [
+            {% for datum in history %}'{{ datum["Date"] }}',{% endfor %}
+        ],
+        datasets: [
+            {
+                label: 'Rank',
+                data: [
+                    {% for datum in history %}
+                    {{ datum["Rank"] }},
+                    {% endfor %}
+                ],
+                backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1
+            },
+        ]
+    },
+    options: {
+        responsive: true,
+        title: {
+            display: true,
+            text: "Rank"
+        },
+        scales: {
+            yAxes: [
+                {
+                    scaleLabel: {
                         display: true,
-                        text: "Rank"
-                    },
-                    scales: {
-                        yAxes: [
-                            {
-                                scaleLabel: {
-                                    display: true,
-                                    labelString: 'Rank'
-                                }
-                            },
-                        ]
+                        labelString: 'Rank'
                     }
-                }
-            });
-        </script>
-    </body>
-</html>
+                },
+            ]
+        }
+    }
+});
+</script>
+{% endblock %}
